@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct MemoryGame<CardContent> {
+struct MemoryGame<CardContent:Equatable> {
     
     init(numberOfPairsOfCards: Int,cardContentFactory: (Int) -> CardContent) {
         cards = Array<Card>()
@@ -17,15 +17,25 @@ struct MemoryGame<CardContent> {
             cards.append(Card(content: content))
             cards.append(Card(content: content))
         }
+        cards.shuffle()
     }
     
     var cards: Array<Card>
+    var numOfFaceUp = 0
+    var score = 0
     
-    func choose(card: Card) {
-        print("card chosen: \(card)")
+    mutating func choose(card: Card) {
+        print("chose the card: \(card)")
+        let chosenIndex = cards.firstIndex(of: card)
+        
+        cards[chosenIndex!].isFaceUp = true
     }
     
-    struct Card:Identifiable {
+    struct Card:Identifiable,Equatable {
+        static func == (lhs: MemoryGame<CardContent>.Card, rhs: MemoryGame<CardContent>.Card) -> Bool {
+            return lhs.id == rhs.id
+        }
+        
         var id = UUID()
         var isFaceUp: Bool = false
         var isMatched: Bool = false
