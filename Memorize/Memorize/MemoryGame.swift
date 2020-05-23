@@ -29,6 +29,25 @@ struct MemoryGame<CardContent:Equatable> {
         let chosenIndex = cards.firstIndex(of: card)
         
         cards[chosenIndex!].isFaceUp = true
+        numOfFaceUp += 1
+        
+        if numOfFaceUp == 2 {
+            match(index: chosenIndex!)
+        }
+    }
+    
+    mutating func match(index: Int) {
+        for i in cards.indices {
+            if cards[i].content == cards[index].content && cards[i].isFaceUp {
+                cards[i].isMatched = true
+                cards[index].isMatched = true
+                score += 1
+            } else if cards[i].isFaceUp {
+                cards[i].isFaceUp = false
+                cards[index].isFaceUp = false
+            }
+        }
+        numOfFaceUp = 0
     }
     
     struct Card:Identifiable,Equatable {
