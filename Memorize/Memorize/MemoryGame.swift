@@ -25,12 +25,12 @@ struct MemoryGame<CardContent:Equatable> {
     var score = 0
     
     mutating func choose(card: Card) {
-        print("chose the card: \(card)")
         let chosenIndex = cards.firstIndex(of: card)
         
         cards[chosenIndex!].isFaceUp = true
         numOfFaceUp += 1
         
+        print("chose the card: \(card)")
         if numOfFaceUp == 2 {
             match(index: chosenIndex!)
         }
