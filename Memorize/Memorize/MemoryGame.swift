@@ -21,42 +21,35 @@ struct MemoryGame<CardContent:Equatable> {
     }
     
     var cards: Array<Card>
-    var numOfFaceUp = 0
-    var score = 0
+   
     
+    //adding key word "mutating" to mutate the self state
     mutating func choose(card: Card) {
-        let chosenIndex = cards.firstIndex(of: card)
+        let chosenIndex = self.index(of: card)
         
-        cards[chosenIndex!].isFaceUp = true
-        numOfFaceUp += 1
+        self.cards[chosenIndex].isFaceUp = !self.cards[chosenIndex].isFaceUp
         
         print("chose the card: \(card)")
-        if numOfFaceUp == 2 {
-            match(index: chosenIndex!)
-        }
+
     }
     
-    mutating func match(index: Int) {
-        for i in cards.indices {
-            if cards[i].content == cards[index].content && cards[i].isFaceUp {
-                cards[i].isMatched = true
-                cards[index].isMatched = true
-                score += 1
-            } else if cards[i].isFaceUp {
-                cards[i].isFaceUp = false
-                cards[index].isFaceUp = false
+    func index(of card:Card) -> Int {
+        for index in 0 ..< self.cards.count{
+            if self.cards[index].id == card.id {
+                return index
             }
         }
-        numOfFaceUp = 0
+        return 0//TODO: rogus
     }
     
-    struct Card:Identifiable,Equatable {
+    
+    struct Card:Identifiable {
         static func == (lhs: MemoryGame<CardContent>.Card, rhs: MemoryGame<CardContent>.Card) -> Bool {
             return lhs.id == rhs.id
         }
         
         var id = UUID()
-        var isFaceUp: Bool = false
+        var isFaceUp: Bool = true
         var isMatched: Bool = false
         var content: CardContent
     }
