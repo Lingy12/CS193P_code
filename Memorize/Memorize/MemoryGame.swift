@@ -9,6 +9,9 @@
 import Foundation
 
 struct MemoryGame<CardContent:Equatable> {
+    var cards: Array<Card>
+    
+    var indexOfTheOnlyFaceUpCard:Int?
     
     init(numberOfPairsOfCards: Int,cardContentFactory: (Int) -> CardContent) {
         cards = Array<Card>()
@@ -20,17 +23,24 @@ struct MemoryGame<CardContent:Equatable> {
         cards.shuffle()
     }
     
-    var cards: Array<Card>
-   
     
     //adding key word "mutating" to mutate the self state
     mutating func choose(card: Card) {
-        let chosenIndex = self.cards.firstIndex(matching: card)!
-        
-        self.cards[chosenIndex].isFaceUp = !self.cards[chosenIndex].isFaceUp
-        
         print("chose the card: \(card)")
-
+        
+        if let chosenIndex = self.cards.firstIndex(matching: card), !cards[chosenIndex].isFaceUp,!cards[chosenIndex].isMatched {
+            
+            if let potentialMatchIndex = indexOfTheOnlyFaceUpCard {
+                if cards[chosenIndex].content == cards[potentialMatchIndex].content {
+                    cards[chosenIndex].isMatched = true
+                    cards[potentialMatchIndex].isMatched = true
+                }
+            }
+            
+            self.cards[chosenIndex].isFaceUp = !self.cards[chosenIndex].isFaceUp
+        }
+        
+        
     }
     
     
