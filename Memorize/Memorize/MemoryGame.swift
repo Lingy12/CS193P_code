@@ -11,7 +11,16 @@ import Foundation
 struct MemoryGame<CardContent:Equatable> {
     var cards: Array<Card>
     
-    var indexOfTheOnlyFaceUpCard:Int?
+    var indexOfTheOnlyFaceUpCard:Int? {
+        get {
+            cards.indices.filter{cards[$0].isFaceUp}.only
+        }
+        set {
+            for index in cards.indices {
+                cards[index].isFaceUp = index == newValue
+            }
+        }
+    }
     
     init(numberOfPairsOfCards: Int,cardContentFactory: (Int) -> CardContent) {
         cards = Array<Card>()
@@ -35,12 +44,11 @@ struct MemoryGame<CardContent:Equatable> {
                     cards[chosenIndex].isMatched = true
                     cards[potentialMatchIndex].isMatched = true
                 }
+                self.cards[chosenIndex].isFaceUp = true
+            } else {
+                indexOfTheOnlyFaceUpCard = chosenIndex
             }
-            
-            self.cards[chosenIndex].isFaceUp = !self.cards[chosenIndex].isFaceUp
         }
-        
-        
     }
     
     
@@ -50,7 +58,7 @@ struct MemoryGame<CardContent:Equatable> {
         }
         
         var id = UUID()
-        var isFaceUp: Bool = true
+        var isFaceUp: Bool = false
         var isMatched: Bool = false
         var content: CardContent
     }
