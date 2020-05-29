@@ -25,21 +25,12 @@ struct MemoryGame<CardContent:Equatable> {
     
     //adding key word "mutating" to mutate the self state
     mutating func choose(card: Card) {
-        let chosenIndex = self.index(of: card)
+        let chosenIndex = self.cards.firstIndex(matching: card)!
         
         self.cards[chosenIndex].isFaceUp = !self.cards[chosenIndex].isFaceUp
         
         print("chose the card: \(card)")
 
-    }
-    
-    func index(of card:Card) -> Int {
-        for index in 0 ..< self.cards.count{
-            if self.cards[index].id == card.id {
-                return index
-            }
-        }
-        return 0//TODO: rogus
     }
     
     

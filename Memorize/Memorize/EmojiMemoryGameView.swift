@@ -13,16 +13,16 @@ struct EmojiMemoryGameView: View {
     //viewModel have observable object
     
     var body: some View {
-        HStack{
-            ForEach(viewModel.cards) { card in
-                CardView(card: card).onTapGesture {
-                    self.viewModel.choose(card: card)
-                }
-                .aspectRatio(2/3, contentMode: .fit)
+        
+        Grid(viewModel.cards){ card in
+            CardView(card: card).onTapGesture {
+                self.viewModel.choose(card: card)
             }
-            .padding()
-            .foregroundColor(Color.orange)
+            .padding(5)
         }
+        .padding()
+        .foregroundColor(Color.orange)
+        
     }
 }
 
@@ -36,12 +36,14 @@ struct CardView: View {
                     RoundedRectangle(cornerRadius: self.cornerRadius).fill(Color.white)
                     RoundedRectangle(cornerRadius: self.cornerRadius).stroke(lineWidth:self.edgeLineWidth)
                     Text(self.card.content)
-                   } else {
+                } else {
                     RoundedRectangle(cornerRadius: self.cornerRadius).fill()
-                   }
-               }
+                }
+            }
             .font(.system(size: min(geometry.size.width,geometry.size.height)*self.fontScaleFactor))
+            .aspectRatio(2/3, contentMode: .fit)
         })
+        
     }
     
     struct ContentView_Previews: PreviewProvider {
