@@ -10,6 +10,9 @@ import Foundation
 
 struct MemoryGame<CardContent:Equatable> {
     var cards: Array<Card>
+    var score = 0
+    var seen:Array<Card> = []
+    var theme:Theme
     
     var indexOfTheOnlyFaceUpCard:Int? {
         get {
@@ -22,14 +25,15 @@ struct MemoryGame<CardContent:Equatable> {
         }
     }
     
-    init(numberOfPairsOfCards: Int,cardContentFactory: (Int) -> CardContent) {
+    init(theme:Theme,numberOfPairsOfCards: Int,cardContentFactory: (Int) -> CardContent) {
         cards = Array<Card>()
         for pairIndex in 0..<numberOfPairsOfCards {
             let content = cardContentFactory(pairIndex)
             cards.append(Card(content: content))
             cards.append(Card(content: content))
         }
-        cards.shuffle()
+        cards.shuffle()//shuffle the card
+        self.theme = theme
     }
     
     
@@ -43,6 +47,16 @@ struct MemoryGame<CardContent:Equatable> {
                 if cards[chosenIndex].content == cards[potentialMatchIndex].content {
                     cards[chosenIndex].isMatched = true
                     cards[potentialMatchIndex].isMatched = true
+                    self.score += 2
+                } else {
+                    if seen.firstIndex(matching: cards[chosenIndex]) != nil {
+                        self.score -= 1
+                    }
+                    if seen.firstIndex(matching: cards[potentialMatchIndex]) != nil {
+                        self.score -= 1
+                    }
+                    seen.append(cards[chosenIndex])
+                    seen.append(cards[potentialMatchIndex])
                 }
                 self.cards[chosenIndex].isFaceUp = true
             } else {
@@ -50,7 +64,6 @@ struct MemoryGame<CardContent:Equatable> {
             }
         }
     }
-    
     
     struct Card:Identifiable {
         static func == (lhs: MemoryGame<CardContent>.Card, rhs: MemoryGame<CardContent>.Card) -> Bool {

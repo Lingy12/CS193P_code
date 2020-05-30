@@ -13,21 +13,54 @@ struct EmojiMemoryGameView: View {
     //viewModel have observable object
     
     var body: some View {
-        
-        Grid(viewModel.cards){ card in
-            CardView(card: card).onTapGesture {
-                self.viewModel.choose(card: card)
+        VStack{
+            Text("\(viewModel.theme.name)")
+                .font(.title)
+                .padding()
+            
+            VStack {
+                Grid(viewModel.cards){ card in
+                    CardView(card: card,filledColor: self.viewModel.theme.color).onTapGesture {
+                        self.viewModel.choose(card: card)
+                    }
+                    .padding(5)
+                }
+                .padding()
+                .foregroundColor(Color.orange)
+                
+                Spacer()
+                
+                HStack {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10.0)
+                            .fill(Color.blue)
+                        Button(action: {
+                            self.viewModel.reset()
+                        }){
+                            Text("New Game")
+                        }
+                        .foregroundColor(.black)
+                    }
+                    .frame(width: 100  , height: 40)
+                    
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10.0)
+                            .fill(Color.blue)
+                        
+                        Text("Score:\(viewModel.score)")
+                            .foregroundColor(Color.black)
+                    }
+                    .frame(width: 100  , height: 40)
+                }
+                .frame(width: 200, height: 100, alignment: .center)
             }
-            .padding(5)
         }
-        .padding()
-        .foregroundColor(Color.orange)
-        
     }
 }
 
 struct CardView: View {
     var card: MemoryGame<String>.Card
+    var filledColor:Color
     
     var body: some View {
         GeometryReader(content:{ geometry in
@@ -38,7 +71,7 @@ struct CardView: View {
                     Text(self.card.content)
                 } else {
                     if !self.card.isMatched {
-                        RoundedRectangle(cornerRadius: self.cornerRadius).fill()
+                        RoundedRectangle(cornerRadius: self.cornerRadius).fill(self.filledColor)
                     }
                 }
             }
